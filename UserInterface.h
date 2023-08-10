@@ -1,14 +1,10 @@
-// UserInterface.h
 #pragma once
-#include <iostream>
-#include <string>
-#include <vector>
 #include "TaskTracker.h"
 
 class UserInterface {
 private:
     TaskTracker taskTracker;
-
+    bool isRunning = true;
 public:
     void run();
     void displayMenu();

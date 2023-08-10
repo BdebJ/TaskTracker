@@ -1,12 +1,14 @@
 #include "UserInterface.h"
 
 void UserInterface::run() {
-    int choice;
-    while (true) {
+    int selection;
+    taskTracker.loadTasksFromCSV();
+
+    while (isRunning) {
         displayMenu();
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
-        processChoice(choice);
+        std::cin >> selection;
+        processChoice(selection);
     }
 }
 
@@ -21,8 +23,8 @@ void UserInterface::displayMenu() {
     std::cout << "7. Exit" << std::endl;
 }
 
-void UserInterface::processChoice(int choice) {
-    switch (choice) {
+void UserInterface::processChoice(int selection) {
+    switch (selection) {
     case 1:
         addTask();
         break;
@@ -43,9 +45,13 @@ void UserInterface::processChoice(int choice) {
         break;
     case 7:
         std::cout << "Exiting the application." << std::endl;
-        exit(0);
+        taskTracker.saveTasksToCSV();
+        isRunning = false;
+        break;
     default:
         std::cout << "Invalid choice. Please try again." << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
 
@@ -61,12 +67,27 @@ void UserInterface::addTask() {
     std::cin.ignore();
     std::getline(std::cin, description);
 
-    std::cout << "Is the task completed? (Y/N): ";
-    std::cin >> completedInput;
-    bool completed = (completedInput == "Y" || completedInput == "y");
+    bool completed;
+    while (true) {
+        std::cout << "Is the task completed? (Y/N): ";
+        std::cin >> completedInput;
+
+        if (completedInput == "Y" || completedInput == "y") {
+            completed = true;
+            break;
+        }
+        else if (completedInput == "N" || completedInput == "n") {
+            completed = false;
+            break;
+        }
+        else {
+            std::cout << "Invalid input for task completion status. Please enter 'y' or 'n'." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
 
     taskTracker.addTask(title, description, completed);
-    std::cout << "Task added successfully." << std::endl;
 }
 
 
