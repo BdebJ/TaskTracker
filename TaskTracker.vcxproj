@@ -128,15 +128,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Task.cpp" />
-    <ClCompile Include="TaskTracker.cpp" />
-    <ClCompile Include="UserInterface.cpp" />
+    <ClCompile Include="src\Utility\Utils.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Task\Task.cpp" />
+    <ClCompile Include="src\TaskTracker\TaskTracker.cpp" />
+    <ClCompile Include="src\UserInterface\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Task.h" />
-    <ClInclude Include="TaskTracker.h" />
-    <ClInclude Include="UserInterface.h" />
+    <ClInclude Include="src\Utility\Utils.h" />
+    <ClInclude Include="src\Task\Task.h" />
+    <ClInclude Include="src\TaskTracker\TaskTracker.h" />
+    <ClInclude Include="src\UserInterface\UserInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

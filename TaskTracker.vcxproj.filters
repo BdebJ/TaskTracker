@@ -13,30 +13,48 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Task">
+      <UniqueIdentifier>{5a72935e-4b2b-4064-9cb6-9ac4e0e6c063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UserInterface">
+      <UniqueIdentifier>{383fdada-99ae-4724-b33d-3f333c30bfd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TaskTracker">
+      <UniqueIdentifier>{5abc20a1-32c1-46bc-ab8e-8e9d4c4bbd7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{e5658179-4602-49f1-b539-33bf762e0d9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TaskTracker.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Task.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Task\Task.cpp">
+      <Filter>Source Files\Task</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\TaskTracker\TaskTracker.cpp">
+      <Filter>Source Files\TaskTracker</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\UserInterface\UserInterface.cpp">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utility\Utils.cpp">
+      <Filter>Source Files\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Task.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\Task\Task.h">
+      <Filter>Source Files\Task</Filter>
     </ClInclude>
-    <ClInclude Include="TaskTracker.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\TaskTracker\TaskTracker.h">
+      <Filter>Source Files\TaskTracker</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\UserInterface\UserInterface.h">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility\Utils.h">
+      <Filter>Source Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

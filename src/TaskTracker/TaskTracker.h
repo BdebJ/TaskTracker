@@ -4,9 +4,8 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
-#include <cctype>
-#include <cstdlib>
-#include "Task.h"
+#include "../Utility/Utils.h"
+#include "../Task/Task.h"
 
 namespace fs = std::filesystem;
 
@@ -18,11 +17,11 @@ public:
     std::vector<Task> listTasks() const;
     std::vector<Task> searchTasks(const std::string&) const;
 
-    Task getTaskDetails(const std::string&);
+    Task* getTaskDetails(const std::string&);
     void saveTasksToCSV(const std::string & = "TaskList.csv");
     void loadTasksFromCSV(const std::string& = "TaskList.csv");
-    void addTask(const std::string&, const std::string&, bool);
-    void deleteTask(const std::string&);
-    void completeTask(const std::string&);
+    bool addTask(const std::string&, const std::string&, bool);
+    bool deleteTask(const std::string&);
+    bool completeTask(const std::string&);
 
 };

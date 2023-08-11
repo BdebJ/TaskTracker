@@ -7,7 +7,7 @@ void UserInterface::run() {
     while (isRunning) {
         displayMenu();
         std::cout << "Enter your choice: ";
-        std::cin >> selection;
+        selection = utils::readInt();
         processChoice(selection);
     }
 }
@@ -56,21 +56,18 @@ void UserInterface::processChoice(int selection) {
 }
 
 void UserInterface::addTask() {
-    std::string title, description;
-    std::string completedInput;
+    std::string title, description, completedInput;
 
     std::cout << "Enter task title: ";
-    std::cin.ignore();
-    std::getline(std::cin, title);
+    title = utils::readLine();
 
     std::cout << "Enter task description: ";
-    std::cin.ignore();
-    std::getline(std::cin, description);
+    description = utils::readLine();
 
     bool completed;
     while (true) {
         std::cout << "Is the task completed? (Y/N): ";
-        std::cin >> completedInput;
+        completedInput = utils::readLine();
 
         if (completedInput == "Y" || completedInput == "y") {
             completed = true;
@@ -82,8 +79,6 @@ void UserInterface::addTask() {
         }
         else {
             std::cout << "Invalid input for task completion status. Please enter 'y' or 'n'." << std::endl;
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
 
@@ -111,8 +106,7 @@ void UserInterface::searchTasks() {
     std::string keyword;
 
     std::cout << "Enter keyword to search: ";
-    std::cin.ignore();
-    std::getline(std::cin, keyword);
+    keyword = utils::readLine();
 
     std::vector<Task> matchingTasks = taskTracker.searchTasks(keyword);
     if (matchingTasks.empty()) {
@@ -133,40 +127,46 @@ void UserInterface::markComplete() {
     std::string title;
 
     std::cout << "Task title of the task to mark as complete: ";
-    std::cin.ignore();
-    std::getline(std::cin, title);
+    title = utils::readLine();
 
-    taskTracker.completeTask(title);
-    //std::cout << "Task marked complete." << std::endl;
+    if (taskTracker.completeTask(title)) {
+        std::cout << "Task marked complete." << std::endl;
+    }
+    else {
+        std::cout << "Task not found." << std::endl;
+    }
 }
 
 void UserInterface::removeTask() {
     std::string title;
 
     std::cout << "Enter the title of the task to remove: ";
-    std::cin.ignore();
-    std::getline(std::cin, title);
+    title = utils::readLine();
 
-    taskTracker.deleteTask(title);
-    //std::cout << "Task removed." << std::endl;
+    if (taskTracker.deleteTask(title)) {
+        std::cout << "Task removed." << std::endl;
+    }
+    else {
+        std::cout << "Task not found." << std::endl;
+    }
 }
 
 void UserInterface::viewTaskDetails() {
     std::string title;
 
     std::cout << "Enter the title of the task to view details: ";
-    std::cin.ignore();
-    std::getline(std::cin, title);
+    title = utils::readLine();
 
-    Task task = taskTracker.getTaskDetails(title);
-    if (task.getTitle() == "") {
-        std::cout << "Task not found." << std::endl;
-    }
-    else {
+    Task* taskPtr = taskTracker.getTaskDetails(title);
+    if (taskPtr) {
+        Task task = *taskPtr;
         std::cout << "===== Task Details =====" << std::endl;
         std::cout << "Title: " << task.getTitle() << std::endl;
         std::cout << "Description: " << task.getDescription() << std::endl;
         std::cout << "Completed: " << (task.isCompleted() ? "Yes" : "No") << std::endl;
         std::cout << "=========================" << std::endl;
+    }
+    else {
+        std::cout << "Task not found." << std::endl;
     }
 }

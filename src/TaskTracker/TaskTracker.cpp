@@ -8,7 +8,7 @@ std::vector<Task> TaskTracker::searchTasks(const std::string& keyword) const {
     std::vector<Task> matchingTasks;
 
     for (const Task& task : tasks) {
-        if (task.getTitle().find(keyword) != std::string::npos ||
+        if (task.getTitle().find(keyword) != std::string::npos || 
             task.getDescription().find(keyword) != std::string::npos) {
             matchingTasks.push_back(task);
         }
@@ -16,16 +16,16 @@ std::vector<Task> TaskTracker::searchTasks(const std::string& keyword) const {
     return matchingTasks;
 }
 
-Task TaskTracker::getTaskDetails(const std::string& title) {
+Task* TaskTracker::getTaskDetails(const std::string& title) {
     auto it = std::find_if(tasks.begin(), tasks.end(), [&title](const Task& task) {
         return task.getTitle() == title;
         });
 
     if (it != tasks.end()) {
-        return *it;  
+        return &(*it);
     }
     else {
-        // Handle case when task with the provided title is not found
+        return nullptr;
     }
 }
 
@@ -38,16 +38,17 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
         err = _dupenv_s(&homeDir, &len, "USERPROFILE");
     }
 
-    std::string filePath;  // Define filePath here
-
     if (err == 0 && homeDir) {
-        #ifdef _WIN32
-            filePath = std::string(homeDir) + "\\Documents\\Tasks\\" + filename;
-        #else
-            filePath = std::string(homeDir) + "/Documents/Tasks/" + filename;
-        #endif
+        std::string documentsPath;
+    #ifdef _WIN32
+        documentsPath = std::string(homeDir) + "\\Documents\\Tasks\\";
+    #else
+        documentsPath = std::string(homeDir) + "/Documents/Tasks/";
+    #endif
 
-        fs::create_directory(fs::path(filePath).parent_path());
+        fs::create_directories(documentsPath);
+        std::string filePath = documentsPath + filename;
+
         std::ofstream outFile(filePath);
         if (!outFile) {
             std::cerr << "Error opening file for writing: " << filePath << std::endl;
@@ -56,7 +57,7 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
         }
 
         for (const Task& task : tasks) {
-            outFile << task.getTitle() << "," << task.getDescription() << "," << (task.isCompleted() ? "1" : "0") << "\n";
+            outFile << task.getTitle() << "|" << task.getDescription() << "|" << (task.isCompleted() ? "1" : "0") << "\n";
         }
         outFile.close();
         free(homeDir);
@@ -64,11 +65,8 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
     else {
         std::cerr << "Error getting home directory." << std::endl;
     }
-
-    if (!filePath.empty() && !fs::exists(filePath)) {
-        std::cerr << "Couldnt create Taskfile" << std::endl;
-    }
 }
+
 
 void TaskTracker::loadTasksFromCSV(const std::string& filename) {
     char* homeDir = nullptr;
@@ -81,17 +79,19 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
 
     if (err == 0 && homeDir) {
         std::string filePath;
-
-        #ifdef _WIN32
-            filePath = std::string(homeDir) + "\\Documents\\Tasks\\" + filename;
-        #else
-            filePath = std::string(homeDir) + "/Documents/Tasks/" + filename;
-        #endif
+    #ifdef _WIN32
+        filePath = std::string(homeDir) + "\\Documents\\Tasks\\" + filename;
+    #else
+         filePath = std::string(homeDir) + "/Documents/Tasks/" + filename;
+    #endif
 
         if (!fs::exists(filePath)) {
             std::cerr << "Taskfile not found. Skipping loading." << std::endl;
             free(homeDir);
             return;
+        }
+        else {
+            std::cout << "Loading tasks from TaskFile" << std::endl;
         }
 
         std::ifstream inFile(filePath);
@@ -106,8 +106,8 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
             std::istringstream lineSS(line);
             std::string title, description, completedStr;
 
-            if (std::getline(lineSS, title, ',') &&
-                std::getline(lineSS, description, ',') &&
+            if (std::getline(lineSS, title, '|') &&
+                std::getline(lineSS, description, '|') &&
                 std::getline(lineSS, completedStr)) {
                 bool completed = (completedStr == "1");
                 tasks.emplace_back(title, description, completed);
@@ -124,34 +124,39 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
     }
 }
 
+bool TaskTracker::addTask(const std::string& title, const std::string& description, bool completed) {
+    size_t initialSize = tasks.size();
 
-void TaskTracker::addTask(const std::string& title, const std::string& description, bool completed) {
     Task newTask(title, description, completed);
     tasks.push_back(newTask);
+
+    return tasks.size() > initialSize;
 }
 
-void TaskTracker::deleteTask(const std::string& title) {
+bool TaskTracker::deleteTask(const std::string& title) {
     auto it = std::find_if(tasks.begin(), tasks.end(), [&title](const Task& task) {
         return task.getTitle() == title;
         });
 
     if (it != tasks.end()) {
         tasks.erase(it);
+        return true;
     }
     else {
-        // Handle case when task with the provided title is not found
+        return false;
     }
 }
 
-void TaskTracker::completeTask(const std::string& title) {
+bool TaskTracker::completeTask(const std::string& title) {
     auto it = std::find_if(tasks.begin(), tasks.end(), [&title](Task& task) {
         return task.getTitle() == title;
         });
 
     if (it != tasks.end()) {
         it->editCompletion(true);
+        return true;
     }
     else {
-        // Handle case when task with the provided title is not found
+        return false;
     }
 }
