@@ -1,6 +1,12 @@
 #include "Utils.h"
 
 namespace utils {
+    std::string strip(const std::string& s) {
+        size_t f = s.find_first_not_of(' ');
+        size_t l = s.find_last_not_of(' ');
+        return  { s.begin() + f, s.begin() + l + 1 };
+    }
+
     int readInt() {
         int value;
         std::cin >> value;
@@ -12,8 +18,7 @@ namespace utils {
     std::string readLine() {
         std::string line;
         std::getline(std::cin, line);
-        line = std::regex_replace(line, std::regex("^\\s+|\\s+$"), "");
-        return line;
+        return utils::strip(line);
     }
 
     void clearConsole() {
@@ -23,4 +28,23 @@ namespace utils {
         system("clear");
 #endif
     }
+
+    void printTaskTable(const std::vector<Task>& tasks) {
+        int totalWidth = 120; // Total width of the table
+
+        std::cout << std::setw(totalWidth) << std::setfill('-') << "" << std::setfill(' ') << std::endl;
+
+        std::cout << std::setw(30) << std::left << "Title"
+            << std::setw(60) << std::left << "Description"
+            << std::setw(20) << std::right << "Completed" << std::endl;
+        std::cout << std::string(totalWidth, '-') << std::endl;
+
+        for (const Task& task : tasks) {
+            std::cout << std::setw(30) << std::left << task.getTitle().substr(0, 30)
+                << std::setw(60) << std::left << task.getDescription().substr(0, 60)
+                << std::setw(20) << std::right << (task.isCompleted() ? "Yes" : "No") << std::endl;
+        }
+        std::cout << std::string(totalWidth, '=') << std::endl;
+    }
 }
+

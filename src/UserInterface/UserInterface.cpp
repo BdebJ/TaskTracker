@@ -13,14 +13,14 @@ void UserInterface::run() {
 }
 
 void UserInterface::displayMenu() {
-    std::cout << "===== Task Tracker Menu =====" << std::endl;
-    std::cout << "1. Add Task" << std::endl;
-    std::cout << "2. List Tasks" << std::endl;
-    std::cout << "3. Search Tasks" << std::endl;
-    std::cout << "4. Complete Task" << std::endl;
-    std::cout << "5. Delete Task" << std::endl;
-    std::cout << "6. View Task Details" << std::endl;
-    std::cout << "7. Exit" << std::endl;
+    std::cout << "===== Task Tracker Menu =====" << "\n";
+    std::cout << "1. Add Task" << "\n";
+    std::cout << "2. List Tasks" << "\n";
+    std::cout << "3. Search Tasks" << "\n";
+    std::cout << "4. Complete Task" << "\n";
+    std::cout << "5. Delete Task" << "\n";
+    std::cout << "6. View Task Details" << "\n";
+    std::cout << "7. Exit" << "\n";
 }
 
 void UserInterface::processChoice(int selection) {
@@ -44,13 +44,13 @@ void UserInterface::processChoice(int selection) {
         viewTaskDetails();
         break;
     case 7:
-        std::cout << "Exiting the application." << std::endl;
+        std::cout << "Exiting the application." << "\n";
         taskTracker.saveTasksToCSV();
         isRunning = false;
         break;
     default:
         utils::clearConsole();
-        std::cout << "Invalid choice. Please try again." << std::endl;
+        std::cout << "Invalid choice. Please try again." << "\n";
     }
 }
 
@@ -78,13 +78,13 @@ void UserInterface::addTask() {
             break;
         }
         else {
-            std::cout << "Invalid input for task completion status. Please enter 'y' or 'n'." << std::endl;
+            std::cout << "Invalid input for task completion status. Please enter 'y' or 'n'." << "\n";
         }
     }
 
     if (taskTracker.addTask(title, description, completed)) {
         utils::clearConsole();
-        std::cout << "Task added successfully." << std::endl;
+        std::cout << "Task added successfully." << "\n";
     }
 }
 
@@ -93,18 +93,12 @@ void UserInterface::listTasks() {
     utils::clearConsole();
     std::vector<Task> tasks = taskTracker.listTasks();
     if (tasks.empty()) {
-        std::cout << "No tasks found." << std::endl;
+        std::cout << "No tasks found." << "\n";
         return;
     }
 
-    std::cout << "===== Tasks List =====" << std::endl;
-    for (const Task& task : tasks) {
-        std::cout << "Title: " << task.getTitle() << std::endl;
-        std::cout << "Description: " << task.getDescription() << std::endl;
-        std::cout << "Completed: " << (task.isCompleted() ? "Yes" : "No") << std::endl;
-        std::cout << "=========================" << std::endl;
-    }
-    std::cout << "Press Enter to continue" << std::endl;
+    utils::printTaskTable(tasks);
+    std::cout << "Press Enter to continue" << "\n";
     std::cin.get();
     utils::clearConsole();
 }
@@ -117,18 +111,12 @@ void UserInterface::searchTasks() {
     utils::clearConsole();
     std::vector<Task> matchingTasks = taskTracker.searchTasks(keyword);
     if (matchingTasks.empty()) {
-        std::cout << "No matching tasks found." << std::endl;
+        std::cout << "No matching tasks found." << "\n";
         return;
     }
 
-    std::cout << "===== Matching Tasks =====" << std::endl;
-    for (const Task& task : matchingTasks) {
-        std::cout << "Title: " << task.getTitle() << std::endl;
-        std::cout << "Description: " << task.getDescription() << std::endl;
-        std::cout << "Completed: " << (task.isCompleted() ? "Yes" : "No") << std::endl;
-        std::cout << "=========================" << std::endl;
-    }
-    std::cout << "Press Enter to continue" << std::endl;
+    utils::printTaskTable(matchingTasks);
+    std::cout << "Press Enter to continue" << "\n";
     std::cin.get();
     utils::clearConsole();
 }
@@ -140,10 +128,10 @@ void UserInterface::markComplete() {
     title = utils::readLine();
 
     if (taskTracker.completeTask(title)) {
-        std::cout << "Task marked complete." << std::endl;
+        std::cout << "Task marked complete." << "\n";
     }
     else {
-        std::cout << "Task not found." << std::endl;
+        std::cout << "Task not found." << "\n";
     }
 }
 
@@ -154,10 +142,10 @@ void UserInterface::removeTask() {
     title = utils::readLine();
     utils::clearConsole();
     if (taskTracker.deleteTask(title)) {
-        std::cout << "Task removed." << std::endl;
+        std::cout << "Task removed." << "\n";
     }
     else {
-        std::cout << "Task not found." << std::endl;
+        std::cout << "Task not found." << "\n";
     }
 }
 
@@ -170,16 +158,16 @@ void UserInterface::viewTaskDetails() {
     Task* taskPtr = taskTracker.getTaskDetails(title);
     if (taskPtr) {
         Task task = *taskPtr;
-        std::cout << "===== Task Details =====" << std::endl;
-        std::cout << "Title: " << task.getTitle() << std::endl;
-        std::cout << "Description: " << task.getDescription() << std::endl;
-        std::cout << "Completed: " << (task.isCompleted() ? "Yes" : "No") << std::endl;
-        std::cout << "=========================" << std::endl;
-        std::cout << "Press Enter to continue" << std::endl;
+        std::cout << "===== Task Details =====" << "\n";
+        std::cout << "Title: " << task.getTitle() << "\n\n";
+        std::cout << "Description: " << task.getDescription() << "\n\n";;
+        std::cout << "Completed: " << (task.isCompleted() ? "Yes" : "No") << "\n\n";;
+        std::cout << "=========================" << "\n";
+        std::cout << "Press Enter to continue" << "\n";
         std::cin.get();
         utils::clearConsole();
     }
     else {
-        std::cout << "Task not found." << std::endl;
+        std::cout << "Task not found." << "\n";
     }
 }

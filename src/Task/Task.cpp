@@ -31,5 +31,3 @@ void Task::editDescription(const std::string& newDescription) {
 void Task::editCompletion(const bool completionStatus) {
     completed = completionStatus;
 }
-
-
