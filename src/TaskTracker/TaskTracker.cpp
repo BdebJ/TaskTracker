@@ -40,11 +40,11 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
 
     if (err == 0 && homeDir) {
         std::string documentsPath;
-    #ifdef _WIN32
+#ifdef _WIN32
         documentsPath = std::string(homeDir) + "\\Documents\\Tasks\\";
-    #else
+#else
         documentsPath = std::string(homeDir) + "/Documents/Tasks/";
-    #endif
+#endif
 
         fs::create_directories(documentsPath);
         std::string filePath = documentsPath + filename;
@@ -79,11 +79,11 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
 
     if (err == 0 && homeDir) {
         std::string filePath;
-    #ifdef _WIN32
+#ifdef _WIN32
         filePath = std::string(homeDir) + "\\Documents\\Tasks\\" + filename;
-    #else
+#else
          filePath = std::string(homeDir) + "/Documents/Tasks/" + filename;
-    #endif
+#endif
 
         if (!fs::exists(filePath)) {
             std::cerr << "Taskfile not found. Skipping loading." << std::endl;

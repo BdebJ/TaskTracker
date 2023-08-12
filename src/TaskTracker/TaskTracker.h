@@ -23,5 +23,4 @@ public:
     bool addTask(const std::string&, const std::string&, bool);
     bool deleteTask(const std::string&);
     bool completeTask(const std::string&);
-
 };
