@@ -114,7 +114,7 @@ void UserInterface::searchTasks() {
         std::cout << "No matching tasks found." << "\n";
         return;
     }
-
+    std::cout << "Found " << matchingTasks.size() << " matches." << std::endl;
     utils::printTaskTable(matchingTasks);
     std::cout << "Press Enter to continue" << "\n";
     std::cin.get();
