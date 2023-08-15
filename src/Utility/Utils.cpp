@@ -1,16 +1,5 @@
 #include "Utils.h"
-
 namespace utils {
-    std::string strip(const std::string& s) {
-        size_t f = s.find_first_not_of(' ');
-        size_t l = s.find_last_not_of(' ');
-
-        if (f == std::string::npos || l == std::string::npos) {
-            return "";
-        }
-        return std::string(s.begin() + f, s.begin() + l + 1);
-    }
-
     int readInt() {
         int value;
         std::cin >> value;
@@ -23,6 +12,16 @@ namespace utils {
         std::string line;
         std::getline(std::cin, line);
         return utils::strip(line);
+    }
+
+    std::string strip(const std::string& s) {
+        size_t f = s.find_first_not_of(' ');
+        size_t l = s.find_last_not_of(' ');
+
+        if (f == std::string::npos || l == std::string::npos) {
+            return "";
+        }
+        return std::string(s.begin() + f, s.begin() + l + 1);
     }
 
     void clearConsole() {

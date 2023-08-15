@@ -14,7 +14,7 @@ private:
     std::vector<Task> tasks;
 
 public:
-    std::vector<Task> listTasks() const;
+    std::vector<Task> getTasks() const;
     std::vector<Task> searchTasks(const std::string&) const;
 
     Task* getTaskDetails(const std::string&);

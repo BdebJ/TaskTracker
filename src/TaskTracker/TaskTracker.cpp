@@ -1,6 +1,6 @@
 #include "TaskTracker.h"
 
-std::vector<Task> TaskTracker::listTasks() const {
+std::vector<Task> TaskTracker::getTasks() const {
     return tasks;
 }
 
@@ -32,14 +32,15 @@ Task* TaskTracker::getTaskDetails(const std::string& title) {
 void TaskTracker::saveTasksToCSV(const std::string& filename) {
     char* homeDir = nullptr;
     size_t len;
-    errno_t err = _dupenv_s(&homeDir, &len, "HOME");
-
-    if (err != 0 || homeDir == nullptr) {
-        err = _dupenv_s(&homeDir, &len, "USERPROFILE");
-    }
-
+#ifdef _WIN32
+    errno_t err = _dupenv_s(&homeDir, &len, "USERPROFILE");
     if (err == 0 && homeDir) {
-        fs::path documentsPath = fs::path(homeDir) / "Documents" / "Tasks";
+        fs::path documentsPath = fs::path(homeDir) / "OneDrive" / "Documents" / "Taskfiles";
+#else
+    errno_t err = _dupenv_s(&homeDir, &len, "HOME");
+    if (err == 0 && homeDir) {
+        fs::path documentsPath = fs::path(homeDir) / "Documents" / "Taskfiles";
+#endif
 
         fs::create_directories(documentsPath);
         fs::path filePath = documentsPath / filename;
@@ -65,14 +66,16 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
 void TaskTracker::loadTasksFromCSV(const std::string& filename) {
     char* homeDir = nullptr;
     size_t len;
-    errno_t err = _dupenv_s(&homeDir, &len, "HOME");
 
-    if (err != 0 || homeDir == nullptr) {
-        err = _dupenv_s(&homeDir, &len, "USERPROFILE");
-    }
-
+#ifdef _WIN32
+    errno_t err = _dupenv_s(&homeDir, &len, "USERPROFILE");
     if (err == 0 && homeDir) {
-        fs::path documentsPath = fs::path(homeDir) / "Documents" / "Tasks";
+        fs::path documentsPath = fs::path(homeDir) / "OneDrive" / "Documents" / "Taskfiles";
+#else
+    errno_t err = _dupenv_s(&homeDir, &len, "HOME");
+    if (err == 0 && homeDir) {
+        fs::path documentsPath = fs::path(homeDir) / "Documents" / "Taskfiles";
+#endif 
 
         fs::path filePath = documentsPath / filename;
 
@@ -80,9 +83,6 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
             std::cerr << "Taskfile not found. Skipping loading." << std::endl;
             free(homeDir);
             return;
-        }
-        else {
-            std::cout << "Loading tasks from TaskFile" << std::endl;
         }
 
         std::ifstream inFile(filePath);

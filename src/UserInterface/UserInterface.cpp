@@ -2,7 +2,9 @@
 
 void UserInterface::run() {
     int selection;
+    std::cout << "Loading tasks from TaskFile" << std::endl;
     taskTracker.loadTasksFromCSV();
+    std::cout << taskTracker.getTasks().size() << " tasks found" << std::endl;
 
     while (isRunning) {
         displayMenu();
@@ -15,11 +17,13 @@ void UserInterface::run() {
 void UserInterface::displayMenu() {
     std::cout << "===== Task Tracker Menu =====" << "\n";
     std::cout << "1. Add Task" << "\n";
-    std::cout << "2. List Tasks" << "\n";
-    std::cout << "3. Search Tasks" << "\n";
-    std::cout << "4. Complete Task" << "\n";
-    std::cout << "5. Delete Task" << "\n";
-    std::cout << "6. View Task Details" << "\n";
+    if (!taskTracker.getTasks().empty()) {
+        std::cout << "2. List Tasks" << "\n";
+        std::cout << "3. Search Tasks" << "\n";
+        std::cout << "4. Complete Task" << "\n";
+        std::cout << "5. Delete Task" << "\n";
+        std::cout << "6. View Task Details" << "\n";
+    }
     std::cout << "7. Exit" << "\n";
 }
 
@@ -28,29 +32,33 @@ void UserInterface::processChoice(int selection) {
     case 1:
         addTask();
         break;
-    case 2:
-        listTasks();
-        break;
-    case 3:
-        searchTasks();
-        break;
-    case 4:
-        markComplete();
-        break;
-    case 5:
-        removeTask();
-        break;
-    case 6:
-        viewTaskDetails();
-        break;
     case 7:
         std::cout << "Exiting the application." << "\n";
-        taskTracker.saveTasksToCSV();
         isRunning = false;
         break;
     default:
-        utils::clearConsole();
-        std::cout << "Invalid choice. Please try again." << "\n";
+        if (!taskTracker.getTasks().empty()) {
+            switch (selection) {
+            case 2:
+                listTasks();
+                break;
+            case 3:
+                searchTasks();
+                break;
+            case 4:
+                markComplete();
+                break;
+            case 5:
+                removeTask();
+                break;
+            case 6:
+                viewTaskDetails();
+                break;
+            default:
+                utils::clearConsole();
+                std::cout << "Invalid choice. Please try again." << "\n";
+            }
+        }
     }
 }
 
@@ -60,6 +68,13 @@ void UserInterface::addTask() {
     std::string title, description, completedInput;
     std::cout << "Enter task title: ";
     title = utils::readLine();
+
+    if (taskTracker.getTaskDetails(title) != nullptr) {
+        std::cout << "A task with the same title already exists. Enter a unique title or rename conflicting task title." << "\n";
+        std::cout << "Press Enter to continue" << "\n";
+        std::cin.get();
+        return;
+    }
 
     std::cout << "Enter task description: ";
     description = utils::readLine();
@@ -85,13 +100,14 @@ void UserInterface::addTask() {
     if (taskTracker.addTask(title, description, completed)) {
         utils::clearConsole();
         std::cout << "Task added successfully." << "\n";
+        taskTracker.saveTasksToCSV();
     }
 }
 
 
 void UserInterface::listTasks() {
     utils::clearConsole();
-    std::vector<Task> tasks = taskTracker.listTasks();
+    std::vector<Task> tasks = taskTracker.getTasks();
     if (tasks.empty()) {
         std::cout << "No tasks found." << "\n";
         return;
@@ -129,6 +145,7 @@ void UserInterface::markComplete() {
 
     if (taskTracker.completeTask(title)) {
         std::cout << "Task marked complete." << "\n";
+        taskTracker.saveTasksToCSV();
     }
     else {
         std::cout << "Task not found." << "\n";
@@ -143,6 +160,7 @@ void UserInterface::removeTask() {
     utils::clearConsole();
     if (taskTracker.deleteTask(title)) {
         std::cout << "Task removed." << "\n";
+        taskTracker.saveTasksToCSV();
     }
     else {
         std::cout << "Task not found." << "\n";
