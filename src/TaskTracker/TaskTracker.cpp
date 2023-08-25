@@ -31,14 +31,13 @@ Task* TaskTracker::getTaskDetails(const std::string& title) {
 
 void TaskTracker::saveTasksToCSV(const std::string& filename) {
     char* homeDir = nullptr;
-    size_t len;
 #ifdef _WIN32
-    errno_t err = _dupenv_s(&homeDir, &len, "USERPROFILE");
-    if (err == 0 && homeDir) {
+    homeDir = std::getenv("USERPROFILE");
+    if (homeDir) {
         fs::path documentsPath = fs::path(homeDir) / "OneDrive" / "Documents" / "Taskfiles";
 #else
-    errno_t err = _dupenv_s(&homeDir, &len, "HOME");
-    if (err == 0 && homeDir) {
+    homeDir = std::getenv("HOME");
+    if (homeDir) {
         fs::path documentsPath = fs::path(homeDir) / "Documents" / "Taskfiles";
 #endif
 
@@ -48,7 +47,6 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
         std::ofstream outFile(filePath);
         if (!outFile) {
             std::cerr << "Error opening file for writing: " << filePath << std::endl;
-            free(homeDir);
             return;
         }
 
@@ -56,7 +54,6 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
             outFile << task.getTitle() << "|" << task.getDescription() << "|" << (task.isCompleted() ? "1" : "0") << "\n";
         }
         outFile.close();
-        free(homeDir);
     }
     else {
         std::cerr << "Error getting home directory." << std::endl;
@@ -65,15 +62,13 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
 
 void TaskTracker::loadTasksFromCSV(const std::string& filename) {
     char* homeDir = nullptr;
-    size_t len;
-
 #ifdef _WIN32
-    errno_t err = _dupenv_s(&homeDir, &len, "USERPROFILE");
-    if (err == 0 && homeDir) {
+    homeDir = std::getenv("USERPROFILE");
+    if (homeDir) {
         fs::path documentsPath = fs::path(homeDir) / "OneDrive" / "Documents" / "Taskfiles";
 #else
-    errno_t err = _dupenv_s(&homeDir, &len, "HOME");
-    if (err == 0 && homeDir) {
+    homeDir = std::getenv("HOME");
+    if (homeDir) {
         fs::path documentsPath = fs::path(homeDir) / "Documents" / "Taskfiles";
 #endif 
 
@@ -81,14 +76,12 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
 
         if (!fs::exists(filePath)) {
             std::cerr << "Taskfile not found. Skipping loading." << std::endl;
-            free(homeDir);
             return;
         }
 
         std::ifstream inFile(filePath);
         if (!inFile) {
             std::cerr << "Error opening file for reading: " << filePath << std::endl;
-            free(homeDir);
             return;
         }
 
@@ -108,7 +101,6 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
             }
         }
         inFile.close();
-        free(homeDir);
     }
     else {
         std::cerr << "Error getting home directory." << std::endl;
