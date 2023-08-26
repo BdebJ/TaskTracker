@@ -1,14 +1,11 @@
-﻿cmake_minimum_required (VERSION 3.12)
+﻿cmake_minimum_required(VERSION 3.21)
 
-project ("TaskTracker")
+project(TaskTracker)
 
-if (MSVC)
-    # Use MSVC compiler
-    set(CMAKE_CXX_COMPILER cl)
-else()
-    # Use g++ compiler
-    set(CMAKE_CXX_COMPILER g++)
-endif()
+# Set C++ standard version
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Add source files from each module
 file(GLOB_RECURSE UTIL_SOURCES "src/Utility/*.cpp" "src/Utility/*.h")
@@ -27,8 +24,3 @@ set(SOURCES
 
 # Add the executable
 add_executable(TaskTracker ${SOURCES})
-
-# Set C++ standard version
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET TaskTracker PROPERTY CXX_STANDARD 20)
-endif()
