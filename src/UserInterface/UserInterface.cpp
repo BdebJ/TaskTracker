@@ -96,8 +96,9 @@ void UserInterface::addTask() {
             std::cout << "Invalid input for task completion status. Please enter 'y' or 'n'." << "\n";
         }
     }
-
-    if (taskTracker.addTask(title, description, completed)) {
+    
+    std::string currentTime = utils::timePointToString(utils::currentTime());
+    if (taskTracker.addTask(title, description, currentTime, "0", completed)) {
         utils::clearConsole();
         std::cout << "Task added successfully." << "\n";
         taskTracker.saveTasksToCSV();
@@ -178,8 +179,12 @@ void UserInterface::viewTaskDetails() {
         Task task = *taskPtr;
         std::cout << "===== Task Details =====" << "\n";
         std::cout << "Title: " << task.getTitle() << "\n\n";
-        std::cout << "Description: " << task.getDescription() << "\n\n";;
-        std::cout << "Completed: " << (task.isCompleted() ? "Yes" : "No") << "\n\n";;
+        std::cout << "Description: " << task.getDescription() << "\n\n";
+        std::cout << "Started at: " << task.getStartTime() << "\n\n";
+        if (task.getEndTime() != "0") {
+            std::cout << "Finished at: " << task.getEndTime() << "\n\n";
+        }
+        std::cout << "Completed: " << (task.isCompleted() ? "Yes" : "No") << "\n\n";
         std::cout << "=========================" << "\n";
         std::cout << "Press Enter to continue" << "\n";
         std::cin.get();

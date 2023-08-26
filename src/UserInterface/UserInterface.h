@@ -1,5 +1,6 @@
 #pragma once
 #include "../TaskTracker/TaskTracker.h"
+#include "../Utility/Utils.h"
 
 class UserInterface {
 private:

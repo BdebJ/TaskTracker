@@ -51,7 +51,12 @@ void TaskTracker::saveTasksToCSV(const std::string& filename) {
         }
 
         for (const Task& task : tasks) {
-            outFile << task.getTitle() << "|" << task.getDescription() << "|" << (task.isCompleted() ? "1" : "0") << "\n";
+            outFile << task.getTitle() << "|"
+                    << task.getDescription() << "|"
+                    << task.getStartTime() << "|"
+                    << task.getEndTime() << "|"
+                    << (task.isCompleted() ? "1" : "0") 
+                    << "\n";
         }
         outFile.close();
     }
@@ -88,13 +93,15 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
         std::string line;
         while (std::getline(inFile, line)) {
             std::istringstream lineSS(line);
-            std::string title, description, completedStr;
+            std::string title, description, startTime, endTime, completedStr;
 
             if (std::getline(lineSS, title, '|') &&
                 std::getline(lineSS, description, '|') &&
+                std::getline(lineSS, startTime, '|') &&
+                std::getline(lineSS, endTime, '|') &&
                 std::getline(lineSS, completedStr)) {
                 bool completed = (completedStr == "1");
-                tasks.emplace_back(title, description, completed);
+                tasks.emplace_back(title, description, startTime, endTime, completed);
             }
             else {
                 std::cerr << "Error parsing line: " << line << std::endl;
@@ -107,10 +114,13 @@ void TaskTracker::loadTasksFromCSV(const std::string& filename) {
     }
 }
 
-bool TaskTracker::addTask(const std::string& title, const std::string& description, bool completed) {
+bool TaskTracker::addTask(const std::string& title, 
+                          const std::string& description, 
+                          const std::string& startTime,
+                          const std::string& endTime, 
+                          bool completed) {
     size_t initialSize = tasks.size();
-
-    Task newTask(title, description, completed);
+    Task newTask(title, description, startTime, endTime, completed);
     tasks.push_back(newTask);
 
     return tasks.size() > initialSize;
@@ -137,6 +147,7 @@ bool TaskTracker::completeTask(const std::string& title) {
 
     if (it != tasks.end()) {
         it->editCompletion(true);
+        it->setEndTime(utils::timePointToString(utils::currentTime()));
         return true;
     }
     else {

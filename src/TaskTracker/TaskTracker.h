@@ -21,7 +21,11 @@ public:
     Task* getTaskDetails(const std::string&);
     void saveTasksToCSV(const std::string & = "TaskList.csv");
     void loadTasksFromCSV(const std::string& = "TaskList.csv");
-    bool addTask(const std::string&, const std::string&, bool);
+    bool addTask(const std::string& title,
+                 const std::string& description,
+                 const std::string& startTime,
+                 const std::string& endTime,
+                 bool completion);
     bool deleteTask(const std::string&);
     bool completeTask(const std::string&);
 };
